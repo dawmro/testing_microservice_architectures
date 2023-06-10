@@ -25,5 +25,9 @@ def login():
     if not auth:
         return "missing credentials", 401
     
-    # todo
-    # check database for login and password    
+    # check database for login and password where email matches username that came in a request   
+    cur = mysql.connection.cursor()
+    res = cur.execute(
+        
+        "SELECT email, password FROM user WHERE email=%s, (auth.username,)
+    )
