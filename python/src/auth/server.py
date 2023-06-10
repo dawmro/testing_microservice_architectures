@@ -2,6 +2,7 @@ import jwt, datetime, os
 from flask import Flask, request
 from flask_mysqldb import MySQL
 
+
 # create server as a Flask object
 server = Flask(__name__)
 
@@ -14,3 +15,15 @@ server.config["MYSQL_PORT"] = os.environ.get("MYSQL_PORT")
 
 # connect Flask to MySQL database
 mysql = MySQL(server)
+
+
+# create login route
+@server.route("/login", methods =["POST"])
+def login():
+    # get user data from authorization header
+    auth = request.authorization
+    if not auth:
+        return "missing credentials", 401
+    
+    # todo
+    # check database for login and password    
