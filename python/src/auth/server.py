@@ -17,6 +17,18 @@ server.config["MYSQL_PORT"] = os.environ.get("MYSQL_PORT")
 mysql = MySQL(server)
 
 
+# create and return json web token 
+def createJWT(username, secret, authz):
+    return jwt.encode(
+        {
+            "username": username,
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1),
+            "iat": datetime.datetime.now(tz=datetime.timezone.utc),
+            "admin": authz,
+        },
+        secret,
+        algorithm="HS256"
+    )
 
 
 # create login route
@@ -44,8 +56,34 @@ def login():
             return "invalid credentials", 401
         else:
             # return JWT using username and secret from virtual env
-            # todo
-            #return createJWT(auth.username, os.environ.get("JWT_SECRET"), True)
+            return createJWT(auth.username, os.environ.get("JWT_SECRET"), True)
     # if such user does not exists, then credentials are invalid
     else:
         return "invalid credentials", 401
+
+
+# validate jwt route
+@server.route("/validate", method=["POST"])
+def validate():
+    # get encoded jwt from request
+    encoded_jwt = request.headers["Autorization"]
+    
+    # return error if no jwt in request
+    if not encoded_jwt:
+        return "missing credentials", 401
+
+    # get token 
+    encoded_jwt = encoded_jwt.split(" ")[1]
+    
+    # decode token
+    try:
+        decoded = jwt.decode(encoded_jwt, os.environ.get("JWT_SECRET"), algorithm=["HS256"])
+    except:
+        return "not authorized", 403
+    return decoded, 200
+
+if __name__ == "__main__":
+    # run flask server
+    server.run(host="0.0.0.0", port=5000)
+    
+   
