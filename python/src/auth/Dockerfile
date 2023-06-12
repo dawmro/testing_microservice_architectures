@@ -19,4 +19,4 @@ COPY . /app
 EXPOSE 5000
 
 # run server
-CMD["python3", "server.py"]
+CMD ["python3", "server.py"]
