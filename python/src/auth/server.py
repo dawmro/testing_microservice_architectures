@@ -63,7 +63,7 @@ def login():
 
 
 # validate jwt route
-@server.route("/validate", method=["POST"])
+@server.route("/validate", methods=["POST"])
 def validate():
     # get encoded jwt from request
     encoded_jwt = request.headers["Autorization"]
