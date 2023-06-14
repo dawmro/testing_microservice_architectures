@@ -12,4 +12,11 @@ from storage import util
 # create server as a Flask object
 server = Flask(__name__)
 
+# config for mongodb connection
+server.config["MONGO_URI"] = "mongodb://host.minikube.internal:27017/videos
 
+# wrap flask server to interface with mongodb
+mongo = pyMongo(server)
+
+# wrap mongo.db into gridfs to handle files larger than 16MB
+fs = gridfs.GridFS(mongo.db)
