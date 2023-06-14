@@ -20,3 +20,8 @@ mongo = pyMongo(server)
 
 # wrap mongo.db into gridfs to handle files larger than 16MB
 fs = gridfs.GridFS(mongo.db)
+
+# configure rabbitmq connection, make communication with queue synchronous
+connection = pika.BlockingConnection(pika.ConnectionParameters("rabbitmq")
+# create channel
+channel = connection.channel()
