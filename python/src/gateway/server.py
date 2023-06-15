@@ -67,7 +67,10 @@ def upload():
 		return "not authorized", 401
 	
 	
-	
+# create route to download created mp3 file
+@server.route("/download", methods=["GET"])	
+def download():
+	pass
 	
 	
 	
