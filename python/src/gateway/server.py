@@ -13,16 +13,16 @@ from storage import util
 server = Flask(__name__)
 
 # config for mongodb connection
-server.config["MONGO_URI"] = "mongodb://host.minikube.internal:27017/videos
+server.config["MONGO_URI"] = "mongodb://host.minikube.internal:27017/videos"
 
 # wrap flask server to interface with mongodb
-mongo = pyMongo(server)
+mongo = PyMongo(server)
 
 # wrap mongo.db into gridfs to handle files larger than 16MB
 fs = gridfs.GridFS(mongo.db)
 
 # configure rabbitmq connection, make communication with queue synchronous
-connection = pika.BlockingConnection(pika.ConnectionParameters("rabbitmq")
+connection = pika.BlockingConnection(pika.ConnectionParameters("rabbitmq"))
 # create channel
 channel = connection.channel()
 
