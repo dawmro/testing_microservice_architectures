@@ -28,7 +28,26 @@ def start(message, fs_videos, fs_mp3s, channel):
 	fid = fs_mp3s.put(data)
 	f.close()
 	
-
+	# delete audio tempfile
+	os.remove(tf_path)
+	
+	# update message with string version of fid object from uploading audio to mongo db
+	message["mp3s_fid"] = str(fid)
+	
+	# put message on queue
+	try:
+		channel.basic_publish(
+			exchange="",
+			routing_key=os.environ.get("MP3_QUEUE"),
+			body=json.dumps(message),
+			properties=pika.BasicProperties(
+				delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
+			),
+		)
+	# delete mp3 from mongo db in case of error when message can not be created	
+	except Exception as err:
+		fs_mp3s.delete(fid)
+		return "failed to publish message"
 	
 	
 	
