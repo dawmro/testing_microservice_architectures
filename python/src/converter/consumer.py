@@ -20,8 +20,16 @@ def main():
 	)
 	channel = connection.channel()
 	
-
-			
+	# execute when message is taken off the queue
+	def callback(ch, method, properties, body):
+		# convert video to mp3
+		err = to_mp3.start(body, fs_videos, fs_mp3s, ch)
+		# send negative ack if there is an error, make message stay in queue
+		if err:
+			ch.basic_nack(delivery_tag = method.delivery_tag)
+		# ack message if no error
+		else:
+			ch.basic_ack(delivery_tag = method.delivery_tag)	
 	
 	# consume messages
 	channel.basic_consume(
