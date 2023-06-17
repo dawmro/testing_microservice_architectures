@@ -31,9 +31,28 @@ def main():
 		else:
 			ch.basic_ack(delivery_tag = method.delivery_tag)	
 	
-	# consume messages
+	# set messages to consume
 	channel.basic_consume(
 		queue = os.environ.get("VIDEO_QUEUE"),
 		on_message_callback = callback
 	)
+	
+	print("Waiting for messages... To exit press CTRL+C")
+	# start consumming messages
+	channel.start_consuming()
+	
+	
+if __name__ == "__main__":
+	# run main function
+	try:
+		main()
+	# wait for keyboard interrupt
+	except KeyboardInterrupt:
+		print("Interrupted")
+		# shut down service in civilized manner
+		try:
+			sys.exit(0)
+		except SystemExit:
+			os._exit(0)
+			
 	
