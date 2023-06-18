@@ -11,8 +11,8 @@ spec:
       app: converter
   strategy:
     type: RollingUpdate
-      rollingUpdate:
-        maxSurge: 8
+    rollingUpdate:
+      maxSurge: 8
   template:
     metadata:
       labels:
